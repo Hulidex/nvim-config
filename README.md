@@ -1,14 +1,17 @@
-# kickstart.nvim
+# nvim-config
 
 ## Introduction
 
-A starting point for Neovim that is:
+I forked the repository [nvim-lua/kickstart](https://github.com/nvim-lua/kickstart.nvim) for having an started point for my customized neovim config.
+So here you will see an attempt of configuring nvim for my personal needs,
+feel free to have a look at it
 
-* Small
-* Single-file
-* Completely Documented
+## TODO
 
-**NOT** a Neovim distribution, but instead a starting point for your configuration.
+- [ ] Install Github Copilot extension
+- [ ] YAML linting
+- [ ] Split config file to several files easier to manage
+- [ ] Spell check
 
 ## Installation
 
@@ -26,6 +29,7 @@ External Requirements:
 - [ripgrep](https://github.com/BurntSushi/ripgrep#installation)
 - A [Nerd Font](https://www.nerdfonts.com/): optional, provides various icons
   - if you have it set `vim.g.have_nerd_font` in `init.lua` to true
+<!-- TODO: Add steps for automatically installing the nerdfont Hack --->
 - Language Setup:
   - If want to write Typescript, you need `npm`
   - If want to write Golang, you will need `go`
@@ -48,44 +52,32 @@ Neovim's configurations are located under the following paths, depending on your
 | Windows (cmd)| `%userprofile%\AppData\Local\nvim\` |
 | Windows (powershell)| `$env:USERPROFILE\AppData\Local\nvim\` |
 
-#### Recommended Step
+#### Configure neovim
 
-[Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) this repo
-so that you have your own copy that you can modify, then install by cloning the
-fork to your machine using one of the commands below, depending on your OS.
 
-> **NOTE**
-> Your fork's url will be something like this:
-> `https://github.com/<your_github_username>/kickstart.nvim.git`
+<details><summary> Linux </summary>
 
-#### Clone kickstart.nvim
-> **NOTE**
-> If following the recommended step above (i.e., forking the repo), replace
-> `nvim-lua` with `<your_github_username>` in the commands below
-
-<details><summary> Linux and Mac </summary>
+If you want to store the repository in a different folder
 
 ```sh
-git clone https://github.com/nvim-lua/kickstart.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
+git clone https://github.com/Hulidex/nvim-config <your_path>/nvim
+```
+
+Create symbolic link from the repository into the nvim configuration folder.
+Hence, your changes in the repository will applied automatically:
+
+```sh
+ln -s <your_path>/nvim ~/.config
+```
+
+If you don't care about the path you can just clone it directly in the correct place
+
+```sh
+git clone https://github.com/Hulidex/nvim-config ~/.config/nvim
 ```
 
 </details>
 
-<details><summary> Windows </summary>
-
-If you're using `cmd.exe`:
-
-```
-git clone https://github.com/nvim-lua/kickstart.nvim.git %userprofile%\AppData\Local\nvim\
-```
-
-If you're using `powershell.exe`
-
-```
-git clone https://github.com/nvim-lua/kickstart.nvim.git $env:USERPROFILE\AppData\Local\nvim\
-```
-
-</details>
 
 ### Post Installation
 
