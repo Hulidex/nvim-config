@@ -9,6 +9,10 @@ feel free to have a look at it
 > [!IMPORTANT]
 > The nvim tool was configured and tested for debian distributions. It remains uncertain whether the commands described herein will function as intended on Windows-based systems.
 
+## Features
+
+- Copilot
+
 ## TODO
 
 - [ ] Install Github Copilot extension
@@ -74,6 +78,31 @@ cd  ~/.config/nerd-fonts
 > straightforward: the repository's extensive size, due to its inclusion of
 > numerous fonts and files, becomes impractical when our intention is to
 > install merely a select few fonts.
+
+### Copilot
+
+Official copilot getting started guide can be found [here](https://docs.github.com/en/copilot/using-github-copilot/getting-started-with-github-copilot?tool=vimneovim#prerequisites-3)
+
+- We require an active Github Copilot subscription
+- And Node.js version 18 or higher
+
+#### Install node for debian based distributions
+
+Official node installation [here](https://nodejs.org/en/download/package-manager)
+
+```bash
+# installs NVM (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# download and install Node.js
+nvm install 20
+
+# verifies the right Node.js version is in the environment
+node -v # should print `v20.12.1`
+
+# verifies the right NPM version is in the environment
+npm -v # should print `10.5.0`
+```
 
 #### Laguage setup
 
@@ -205,21 +234,6 @@ return {
 
 ### FAQ
 
-* What should I do if I already have a pre-existing neovim configuration?
-  * You should back it up and then delete all associated files.
-  * This includes your existing init.lua and the neovim files in `~/.local`
-    which can be deleted with `rm -rf ~/.local/share/nvim/`
-* Can I keep my existing configuration in parallel to kickstart?
-  * Yes! You can use [NVIM_APPNAME](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME)`=nvim-NAME`
-    to maintain multiple configurations. For example, you can install the kickstart
-    configuration in `~/.config/nvim-kickstart` and create an alias:
-    ```
-    alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
-    ```
-    When you run Neovim using `nvim-kickstart` alias it will use the alternative
-    config directory and the matching local directory
-    `~/.local/share/nvim-kickstart`. You can apply this approach to any Neovim
-    distribution that you would like to try out.
 * What if I want to "uninstall" this configuration:
   * See [lazy.nvim uninstall](https://github.com/folke/lazy.nvim#-uninstalling) information
 * Why is the kickstart `init.lua` a single file? Wouldn't it make sense to split it into multiple files?
@@ -307,4 +321,12 @@ sudo apt install -t unstable neovim
 sudo dnf install -y gcc make git ripgrep fd-find neovim
 ```
 </details>
+
+## Additional notes
+
+- Vim tutorial: run ```:Tutor```
+
+### Hot shortcuts 
+
+- Space s h  -> Look for help, similar to ```:help``` but more advanced
 
