@@ -6,12 +6,16 @@ I forked the repository [nvim-lua/kickstart](https://github.com/nvim-lua/kicksta
 So here you will see an attempt of configuring nvim for my personal needs,
 feel free to have a look at it
 
+> [!IMPORTANT]
+> The nvim tool was configured and tested for debian distributions. It remains uncertain whether the commands described herein will function as intended on Windows-based systems.
+
 ## TODO
 
 - [ ] Install Github Copilot extension
 - [ ] YAML linting
 - [ ] Split config file to several files easier to manage
 - [ ] Spell check
+- [ ] Markdown preview and capabilities
 
 ## Installation
 
@@ -25,15 +29,57 @@ If you are experiencing issues, please make sure you have the latest versions.
 ### Install External Dependencies
 
 External Requirements:
+
+#### Basic utils
+
 - Basic utils: `git`, `make`, `unzip`, C Compiler (`gcc`)
-- [ripgrep](https://github.com/BurntSushi/ripgrep#installation)
-- A [Nerd Font](https://www.nerdfonts.com/): optional, provides various icons
-  - if you have it set `vim.g.have_nerd_font` in `init.lua` to true
-<!-- TODO: Add steps for automatically installing the nerdfont Hack --->
-- Language Setup:
-  - If want to write Typescript, you need `npm`
-  - If want to write Golang, you will need `go`
-  - etc.
+
+#### ripgrep
+
+You can check at the official documentation [ripgrep](https://github.com/BurntSushi/ripgrep#installation)
+
+For debian based distributions:
+
+```sh
+sudo apt install ripgrep
+```
+
+#### NerdFont
+
+You'll need to install a [Nerd Font](https://github.com/ryanoasis/nerd-fonts),
+which offers a wide selection for personalization. To install a Nerd Font of
+your choice, you may adhere to the following steps. In this instance, I have
+opted for the Hack Nerd Font as an example:
+
+
+```sh
+git clone --filter=blob:none --sparse git@github.com:ryanoasis/nerd-fonts ~/.config/nerd-fonts
+cd ~/.config/nerd-fonts
+git sparse-checkout add patched-fonts/Hack
+```
+
+Finally install the font:
+
+```sh
+cd  ~/.config/nerd-fonts
+./install.sh Hack
+```
+
+> [!NOTE]
+> In the first command, we downloaded the repository via a ```git sparse clone```.
+> This method entails cloning only the repository's metadata .
+> Then with the third command we specifically indicated git
+> to checkout completely the folder ```patched-fonts/Hack```.
+> You might wonder why such an approach was taken. The rationale is
+> straightforward: the repository's extensive size, due to its inclusion of
+> numerous fonts and files, becomes impractical when our intention is to
+> install merely a select few fonts.
+
+#### Laguage setup
+
+- If want to write Typescript, you need `npm`
+- If want to write Golang, you will need `go`
+- etc.
 
 > **NOTE**
 > See [Install Recipes](#Install-Recipes) for additional Windows and Linux specific notes
@@ -57,23 +103,20 @@ Neovim's configurations are located under the following paths, depending on your
 
 <details><summary> Linux </summary>
 
-If you want to store the repository in a different folder
-
-```sh
-git clone https://github.com/Hulidex/nvim-config <your_path>/nvim
-```
-
-Create symbolic link from the repository into the nvim configuration folder.
-Hence, your changes in the repository will applied automatically:
-
-```sh
-ln -s <your_path>/nvim ~/.config
-```
-
-If you don't care about the path you can just clone it directly in the correct place
+For those indifferent to the repository's storage location, direct cloning
+into the designated configuration space is feasible:
 
 ```sh
 git clone https://github.com/Hulidex/nvim-config ~/.config/nvim
+```
+
+If you rather prefer to allocate the repository to an alternative directory, you should
+create a symbolic link from the repository to the nvim configuration directory,
+thus ensuring any modifications within the repository are automatically reflected
+
+```sh
+git clone https://github.com/Hulidex/nvim-config <your_path>/nvim
+ln -s <your_path>/nvim ~/.config
 ```
 
 </details>
