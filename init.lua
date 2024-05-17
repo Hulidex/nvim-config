@@ -102,7 +102,7 @@ vim.g.have_nerd_font = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -147,6 +147,10 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
+
+-- Spell checking
+vim.opt.spell = true
+vim.opt.spelllang = 'en_gb'
 
 -- Show which line your cursor is on
 vim.opt.cursorline = true
@@ -228,28 +232,6 @@ require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
-  -- Copilot configuration
-  {
-    'github/copilot.vim',
-    config = function()
-      vim.keymap.set('i', 'C-J', 'copilot#Accept("\\<CR>")', { desc = '', expr = true, replace_keycodes = false })
-      vim.g.copilot_no_tab_map = true
-      --vim.g.copilot_filetypes = {
-      -- }
-      vim.api.nvim_create_autocmd('ColorScheme', {
-        pattern = 'solarized',
-        -- group = ...,
-        callback = function()
-          vim.api.nvim_set_hl(0, 'CopilotSuggestion', {
-            fg = '#111111',
-            ctermfg = 8,
-            force = true,
-          })
-        end,
-      })
-    end,
-  },
-
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -260,7 +242,11 @@ require('lazy').setup({
   --    require('Comment').setup({})
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  {
+    'numToStr/Comment.nvim',
+    opts = {},
+    lazy = false,
+  },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -369,11 +355,21 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          vimgrep_arguments = {
+            'rg',
+            '--color=never',
+            '--no-heading',
+            '--with-filename',
+            '--line-number',
+            '--column',
+            '--smart-case',
+            '--hidden',
+          },
+          -- mappings = {
+          --   i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+          -- },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -387,10 +383,14 @@ require('lazy').setup({
       pcall(require('telescope').load_extension, 'ui-select')
 
       -- See `:help telescope.builtin`
+
+      local find_files_hidden = function()
+        require('telescope.builtin').find_files { hidden = true }
+      end
       local builtin = require 'telescope.builtin'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sf', find_files_hidden, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
@@ -421,6 +421,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+
+      -- Debugging keymap
     end,
   },
 
@@ -781,7 +783,12 @@ require('lazy').setup({
   },
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  {
+    'folke/todo-comments.nvim',
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = { signs = false },
+  },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -824,17 +831,32 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'lua',
+        'luadoc',
+        'diff',
+        'markdown',
+        'terraform',
+        'typescript',
+        'javascript',
+        'python',
+        'yaml',
+        'rust',
+        'json',
+        'dockerfile',
+      },
       -- Autoinstall languages that are not installed
-      auto_install = true,
+      auto_install = false,
       highlight = {
         enable = true,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
         --  If you are experiencing weird indenting issues, add the language to
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
+        -- additional_vim_regex_highlighting = { 'ruby' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      -- indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = true, disable = {} },
     },
     config = function(_, opts)
       -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
@@ -848,6 +870,7 @@ require('lazy').setup({
       --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
       --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+      require('nvim-treesitter.install').prefer_git = true
     end,
   },
 
@@ -870,6 +893,78 @@ require('lazy').setup({
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   -- { import = 'custom.plugins' },
+  --
+  -- Copilot configuration
+  {
+    'github/copilot.vim',
+    opts = {},
+    config = function()
+      -- vim.g.copilot_no_tab_map = true
+      --
+      -- vim.g.copilot_workspace_folders = { '~/repos' }
+      --
+      -- vim.keymap.set('i', 'C-J', 'copilot#Accept("\\<CR>")', { desc = '', expr = true, replace_keycodes = false })
+      --
+      -- --vim.g.copilot_filetypes = {
+      -- -- }
+      -- --
+      -- vim.api.nvim_create_autocmd('ColorScheme', {
+      --   pattern = 'solarized',
+      --   -- group = ...,
+      --   callback = function()
+      --     vim.api.nvim_set_hl(0, 'CopilotSuggestion', {
+      --       fg = '#555555',
+      --       ctermfg = 8,
+      --       force = true,
+      --     })
+      --   end,
+      -- })
+    end,
+  },
+
+  -- Debugger configuration
+  {
+
+    -- https://github.com/rcarriga/nvim-dap-ui?tab=readme-ov-file
+    'rcarriga/nvim-dap-ui',
+    dependencies = {
+      'mfussenegger/nvim-dap',
+      -- More Adapters:
+      -- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
+      'mfussenegger/nvim-dap-python',
+      'nvim-neotest/nvim-nio',
+    },
+    config = function()
+      require('dapui').setup()
+
+      local dap, dapui = require 'dap', require 'dapui'
+      dap.listeners.before.attach.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.launch.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated.dapui_config = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited.dapui_config = function()
+        dapui.close()
+      end
+
+      require('dap-python').setup '~/.virtualenvs/debugpy/bin/python'
+
+      -- Set up the sign for breakpoints
+      vim.fn.sign_define('DapBreakpoint', { text = '🛑', texthl = '', linehl = '', numhl = '' })
+
+      -- keymaps
+      vim.keymap.set('n', '<F5>', dap.continue, { desc = 'Continue' })
+      vim.keymap.set('n', '<F10>', dap.step_over, { desc = 'Step Over' })
+      vim.keymap.set('n', '<F11>', dap.step_into, { desc = 'Step Into' })
+      vim.keymap.set('n', '<F12>', dap.step_out, { desc = 'Step Out' })
+      vim.keymap.set('n', '<Leader>cb', dap.toggle_breakpoint, { desc = 'Toggle Breakpoint' })
+      vim.keymap.set('n', '<Leader>cB', dap.set_breakpoint, { desc = 'Set Breakpoint' })
+    end,
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
